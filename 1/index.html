@@ -1,10 +1,20 @@
 <html>
 <head>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="src/plugin_questions.js"></script>
+	<script src="src/plugin_results.js"></script>
 </head>
 <body>
- <script>
- 	alert('hello world');
- </script>
+<div id="questions"></div>
+<script>
+callback = function() {
+	$('#questions').results();
+}
+
+
+$('#questions').questions({
+	'sumResults': callback
+});
+</script>
 </body>
 </html>
