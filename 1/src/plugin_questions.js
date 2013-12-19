@@ -1,93 +1,94 @@
-;(function ( $, window, document, undefined ) {
-	 
-	var pluginName = "questions",
-		defaults = {
-			sumResults: function() {
-				alert('hey ho, you answered all questions, man!');
-			}
-		};
- 
-	function Plugin( element, options, data) {
-		this.element = element;
-		
-		this.options = $.extend( {}, defaults, options) ;
-		
-		this._defaults = defaults;
-		this._name = pluginName;
-		
-		this.init(element, data);
-	}
- 
-	Plugin.prototype.init = function (element) {
-		var self = this;
-		
-		$.getJSON('questions.json', function(questions){
-			var questionNumber = 0;
-			$.map(questions, function(question){
-				var questionBlock = $('<div data-name="question">' + question.question + '</div>');
-				
-				var answerNumber = 0;
-				$.map(question.answers, function(answer){
-					var input = '<input type=radio name=question[' + questionNumber + '] value="' + questions[questionNumber].points[answerNumber] + '">';
-					
-					
-					var answerOption = '<li>' + input + answer + '</li>';
-					questionBlock.append(answerOption);
-					answerNumber++;
-				});
-				questionBlock.hide();
-				
-				element.append(questionBlock);
-				
-				questionNumber++;
-			});
+var QUESTIONS_PLUGIN = QUESTIONS_PLUGIN || {};
+
+QUESTIONS_PLUGIN  = (function(plugin, $){
+	
+	/**
+	 * Private options
+	 */
+	var defaults = {
+			callBack : function(sum) {
+				alert('sum');
+			},
 			
-			self.action();
+			jsonFile : 'questions.json',
+			
+			questionBlockTempate: '<div><%=questionText%></div>',
+			
+			questionOptionTemplate: '<li><label><input type="radio" name="radio" value=<%=value%>><%=optionText%></label>',
+			
+			$parentElement: undefined
+	}
+	
+	var lastAnsweredQuestionNumber = 0;
+	
+	var score = 0;
+	
+	var questions = [];
+	
+	/**
+	 * Load Json and call draw method.
+	 */
+	var loadQuestions = function () {
+		$.getJSON(defaults.jsonFile, function(parsedQuestions){
+			questions = parsedQuestions;
+			draw();
 		})
 		.fail(function(){
-			alert('can not get json');
+			console.log('Error while getting json')
 		});
-	};
+	}
 	
-	Plugin.prototype.action = function() {
-		
-		var self = this;
-		var allQuestions = true;
-		$("div[data-name='question']").each(function(num, questionElement){
-			
-			var checked = false;
-			$(questionElement).find('input').each(function(num, input) {
-				
-				if ($(input).is(':checked')) {
-					checked = true;
-					return false;
-				}
-				
-				// bind change event on input
-				$(input).change(function(){
-					$(questionElement).hide();
-					self.action();
-				});
+	/**
+	 * Draw questions
+	 */
+	var draw = function() {
+		if (lastAnsweredQuestionNumber >= questions.length - 1) {
+			defaults.callBack(score);
+			return;
+		}
+		else {
+			defaults.$parentElement.html(
+					generateQuestion(questions[lastAnsweredQuestionNumber])).find('li').click(function(){
+						answer(this);
 			});
-			
-			if (!checked){
-				$(questionElement).fadeIn();
-				allQuestions = false;
-				return false;
-			}
-			
-		});
+		}
+	}
+	
+	/**
+	 * Answer event
+	 */
+	var answer = function(optionElement) {
+		score = score + $(optionElement).find('input').val();
+		lastAnsweredQuestionNumber++;
+		draw();
+	}
+	
+	/**
+	 * Generate whole question element
+	 */
+	var generateQuestion = function(questionObject) {
+		var questionElement = tmpl(defaults.questionBlockTempate, {questionText: questionObject.question});
 		
-		if (allQuestions) {
-			this.options.sumResults();
+		for (key in questionObject.answers) {
+			var optionElement = tmpl(defaults.questionOptionTemplate, {
+				name: lastAnsweredQuestionNumber + '[' + key + ']',
+				value: questionObject.points[key],
+				optionText: questionObject.answers[key]});
+			
+			questionElement += optionElement;
 		}
 		
-		
-		//here we will call summ plugin.
+		return questionElement;
 	}
- 
-	$.fn[pluginName] = function ( options ) {
-		new Plugin( this, options);
-		return this;
+	
+	/**
+	 * Main call
+	 */
+	plugin.generate = function(options){
+		defaults = $.extend({}, defaults, options);
+		loadQuestions();
 	}
-})( jQuery, window, document );
+	
+	return plugin;
+	
+}(QUESTIONS_PLUGIN, jQuery))

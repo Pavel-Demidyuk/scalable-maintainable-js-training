@@ -1,3 +1,17 @@
+var ANSWERS_PLUGIN = ANSWERS_PLUGIN || {};
+
+ANSWERS_PLUGIN  = (function(plugin, $){
+	
+	plugin.generate = function(score) {
+		alert ('score in results');
+		console.log(score);
+	}
+	
+	return plugin
+}(ANSWERS_PLUGIN, jQuery));
+
+/*
+
 ;(function ( $, window, document, undefined ) {
 	 
 	var pluginName = "results",
@@ -13,13 +27,12 @@
 		this._defaults = defaults;
 		this._name = pluginName;
 		
-		this.init(element);
+		this.init(element, options);
 	}
  
-	Plugin.prototype.init = function (element) {
+	Plugin.prototype.init = function (element, sum) {
 		var self = this;
 		
-		var sum = fetchAnswersSum();
 		var status = '';
 		$.getJSON('results.json', function(results){
 			var lastResult = 999;
@@ -47,15 +60,7 @@
 	
 	fetchAnswersSum = function() {
 		
-		var sum = 0;
 		
-		$("div[data-name='question']").each(function(num, questionElement){
-			$(questionElement).find('input:checked').each(function(num, element){
-				sum += parseInt($(element).val());
-			})
-		});
-		
-		return sum;
 	}
 	
 	Plugin.prototype.action = function() {
@@ -65,4 +70,4 @@
 		new Plugin( this, options);
 		return this;
 	}
-})( jQuery, window, document );
+})( jQuery, window, document );*/

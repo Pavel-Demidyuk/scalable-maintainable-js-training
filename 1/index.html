@@ -1,20 +1,46 @@
 <html>
 <head>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="src/mediator.js"></script>
+	<script src="src/micro_template.js"></script>
 	<script src="src/plugin_questions.js"></script>
 	<script src="src/plugin_results.js"></script>
 </head>
 <body>
 <div id="questions"></div>
+<div id="questions_1"></div>
 <script>
-callback = function() {
-	$('#questions').results();
-}
 
+APP.EventBus.bind('questionsFinished', function (){ANSWERS_PLUGIN.generate('test')}, 'something here');
+
+
+QUESTIONS_PLUGIN.generate({
+	callBack: function () {APP.EventBus.trigger('questionsFinished')},
+	$parentElement: $('#questions')
+	});
+
+
+/*
+1. Mediator bind in plugin for  
+ 
+ 
+*/
+
+/*
+callback = function(sum) {
+	$('#questions').results(sum);
+}
 
 $('#questions').questions({
 	'sumResults': callback
 });
+
+
+$('#questions_1').questions({
+	'sumResults': callback
+});
+
+*/
 </script>
 </body>
 </html>
