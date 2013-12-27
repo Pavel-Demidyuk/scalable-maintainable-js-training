@@ -1,0 +1,44 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="src/plugin_questions.js"></script>
+	<script src="src/plugin_results.js"></script>
+</head>
+<body>
+<div id="questions"></div>
+<div id="questions_1"></div>
+<script>
+var APP = APP || {};
+
+//module-"class" (constructor)
+APP.NewModule2 = (function (APP, $, undefined) {
+ 
+ // static variables and methods
+ var x = Math.random();
+ 
+ return function () {
+     // private variables and methods
+     var y = Math.random();
+     
+     // public variables and methods
+     
+     this.z = Math.random();
+     
+     this.getX = function () {
+         return x;
+     };
+     
+     this.getY = function () {
+         return y;
+     };
+     
+ };
+}(APP, jQuery));
+
+var test = APP.NewModule2;
+
+console.log(test);
+
+</script>
+</body>
+</html>
