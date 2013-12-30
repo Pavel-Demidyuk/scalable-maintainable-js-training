@@ -1,3 +1,5 @@
+alert('results included');
+
 //var ANSWERS_PLUGIN = ANSWERS_PLUGIN || {};
 //
 //ANSWERS_PLUGIN  = (function(plugin, $){

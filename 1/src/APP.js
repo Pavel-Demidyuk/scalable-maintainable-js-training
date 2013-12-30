@@ -1,4 +1,4 @@
-define(['jquery', 'questionModule', 'resultsModule'], function($, questionModule, resultsModule){
+define(['jquery', 'questionModule'], function($, questionModule){
 	var defaults = {
 	}
 	
@@ -32,6 +32,7 @@ define(['jquery', 'questionModule', 'resultsModule'], function($, questionModule
     	},
     	
     	trigger : function (eventName) {
+    		alert('trigger');
     	    var list, calls, ev, callback, args;
     	    var both = 2;
     	    if (!(calls = this._callbacks)) return this;
@@ -55,10 +56,13 @@ define(['jquery', 'questionModule', 'resultsModule'], function($, questionModule
     	/*
     	 * 
     	 */
-    	onQuestionsFinished: function(options) {
-    		APP.resultsModule({
-    			'$parentElement' : this.options.questionElements[elementKey]
-    		}).loadResults();
+    	onQuestionsFinished: function(score, $parentElement) {
+    		define(['resultsModule'], function(resultsModule){
+	    		resultsModule({
+	    			'$parentElement' : $parentElement,
+	    			'score' : score
+	    		}).loadResults();
+    		})
     	},
     	/*
     	 * 

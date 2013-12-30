@@ -1,4 +1,4 @@
-define(['jquery', 'micro_template'], function($){
+define(['jquery', 'mustache', 'app'], function($, mustache, APP){
 
 	/**
 	 * Private options
@@ -7,6 +7,9 @@ define(['jquery', 'micro_template'], function($){
 			jsonFile : 'questions.json',
 			questionBlockTempate: '<div><%=questionText%></div>',
 			questionOptionTemplate: '<li><label><input type="radio" name="radio" value=<%=value%>><%=optionText%></label>',
+			callBack: function(score, $parentElement) {
+				APP.trigger('questionsFinished', score, $parentElement);
+			}
 	}
 	/**
 	 * 
@@ -41,11 +44,10 @@ define(['jquery', 'micro_template'], function($){
 			
 			if (this.lastAnsweredQuestionNumber >= questions.length - 1) {
 				// all questions are done
-				currentOptions.callBack(score);
+				this.currentOptions.callBack(this.score, this.currentOptions.$parentElement);
 				return;
 			}
-			else {
-				console.log(this.currentOptions.$parentElement);
+			else {				
 				this.currentOptions.$parentElement.html(
 						this.generateQuestion(questions[this.lastAnsweredQuestionNumber])).find('li').click(function(){
 							self.answer(this);
